@@ -9,6 +9,12 @@ class Settings:
     MAX_FILE_SIZE: int = 50 * 1024 * 1024  # 50 MB
     FILE_RETENTION_SECONDS: int = 3600  # 1 hour
 
+    # MongoDB settings
+    MONGODB_URL: str = os.environ.get("MONGODB_URL", "mongodb+srv://mransh901_db_user:WIarusXIMGf6aXrM@cluster0.3iaiwpa.mongodb.net/?appName=Cluster0")
+    SECRET_KEY: str = "your-secret-key-change-this-in-production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 7 days
+
     def __init__(self):
         os.makedirs(self.TEMP_DIR, exist_ok=True)
 

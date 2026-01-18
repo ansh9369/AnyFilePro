@@ -22,6 +22,26 @@ export default function Hero() {
           All the tools you need to become more productive and work smarter with documents.
           100% Free and Secure.
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex justify-center gap-8 text-gray-500 mb-12"
+        >
+          <div className="flex flex-col items-center">
+             <span className="text-3xl font-bold text-blue-600">1M+</span>
+             <span className="text-sm">Files Converted</span>
+          </div>
+          <div className="flex flex-col items-center">
+             <span className="text-3xl font-bold text-blue-600">100k+</span>
+             <span className="text-sm">Happy Users</span>
+          </div>
+          <div className="flex flex-col items-center">
+             <span className="text-3xl font-bold text-blue-600">Secure</span>
+             <span className="text-sm">Encryption</span>
+          </div>
+        </motion.div>
       </section>
   );
 }

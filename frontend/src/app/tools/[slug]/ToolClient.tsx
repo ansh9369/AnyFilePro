@@ -8,6 +8,7 @@ import { uploadFiles, processFiles } from '@/lib/api';
 import { Loader2, Download, FileText, CheckCircle, ArrowLeft, X } from 'lucide-react';
 import Link from 'next/link';
 import { IconMap } from '@/lib/icons';
+import ShareButton from '@/components/ShareButton';
 
 export default function ToolClient({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -154,6 +155,13 @@ export default function ToolClient({ params }: { params: Promise<{ slug: string 
                 <Download className="w-6 h-6 mr-2" />
                 Download File
               </a>
+
+              {resultFilename && (
+                 <div>
+                    <ShareButton filename={resultFilename} />
+                 </div>
+              )}
+
               <div>
                 <button
                   onClick={() => {

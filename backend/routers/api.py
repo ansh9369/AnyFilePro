@@ -7,6 +7,9 @@ import shutil
 from backend.services.storage import StorageService
 from backend.services.converter import ConverterService
 from backend.core.config import settings
+from backend.models.user import User, ConversionLog
+from backend.routers.auth import get_current_user
+from fastapi import Depends
 
 router = APIRouter()
 
@@ -22,7 +25,7 @@ async def upload_files(files: List[UploadFile] = File(...)):
     return {"files": saved_files}
 
 @router.post("/process/image-to-pdf")
-def process_image_to_pdf(filenames: List[str]):
+async def process_image_to_pdf(filenames: List[str], current_user: User = Depends(get_current_user)):
     try:
         paths = [os.path.join(settings.TEMP_DIR, f) for f in filenames]
         # Validate existence
@@ -32,6 +35,15 @@ def process_image_to_pdf(filenames: List[str]):
 
         output_name = f"converted_{os.path.splitext(filenames[0])[0]}.pdf"
         result_path = ConverterService.images_to_pdf(paths, output_name)
+
+        # Log to MongoDB
+        await ConversionLog(
+            user_id=current_user.id,
+            tool_id="image-to-pdf",
+            original_filename=filenames[0], # Just log first file for now
+            result_filename=os.path.basename(result_path)
+        ).insert()
+
         return {"result_filename": os.path.basename(result_path)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

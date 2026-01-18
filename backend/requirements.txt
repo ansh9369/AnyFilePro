@@ -10,3 +10,8 @@ python-docx
 openpyxl
 python-pptx
 pdf2docx
+motor
+beanie
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator

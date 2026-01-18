@@ -2,14 +2,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import asyncio
-from backend.routers import api
+from motor.motor_asyncio import AsyncIOMotorClient
+from beanie import init_beanie
+from backend.routers import api, auth
 from backend.core.config import settings
 from backend.services.storage import StorageService
+from backend.models.user import User, ConversionLog
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Ensure temp dir exists
+    # Startup: Ensure temp dir exists and DB connects
     print(f"Starting up... Temp dir: {settings.TEMP_DIR}")
+
+    # MongoDB Init
+    client = AsyncIOMotorClient(settings.MONGODB_URL)
+    await init_beanie(database=client.get_default_database(), document_models=[User, ConversionLog])
 
     # Background task for cleanup
     async def cleanup_loop():
@@ -41,6 +48,7 @@ app.add_middleware(
 )
 
 app.include_router(api.router, prefix=settings.API_V1_STR)
+app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 
 @app.get("/")
 def read_root():
